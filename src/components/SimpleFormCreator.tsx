@@ -47,10 +47,6 @@ export default function SimpleFormCreator() {
   return (
     <div className="">
       <h2 className="text-xl font-bold mb-4">Create a VC Form Template</h2>
-
-      <p className="pb-2">A <strong>Verifiable Credential (VC)</strong> is a secure digital statement—like an ID card or certificate—that can be shared and independently verified. It's cryptographically signed by the issuer, proving that the information hasn't been tampered with.</p>
-      <p className="pb-4">Creating your <strong>own VC form</strong> lets you define the <strong>title, description, and custom fields</strong> so you can issue credentials tailored to your specific use case—whether it's a membership badge, a course completion certificate, or a peer endorsement. This gives you full control over what information is captured, how it's displayed, and what it means to your community.</p>
-
       <div className="mb-4">
         <label className="block font-semibold">Title</label>
         <input
@@ -82,12 +78,14 @@ export default function SimpleFormCreator() {
             placeholder="Field name (e.g., reputation)"
             className="flex-1 px-3 py-2 border rounded"
           />
-          <button
-            onClick={addField}
-            className="bg-green-600 text-white cursor-pointer px-4 py-2 rounded hover:bg-green-700"
-          >
-            Add
-          </button>
+          <Components.CustomButton
+              text="Add"
+              onClick={addField}
+              sm={true}
+              bgColor="bg-green-600"
+              textColor="text-white"
+              bghColor="bg-green-700"
+          />
         </div>
       </div>
 

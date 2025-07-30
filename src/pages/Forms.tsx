@@ -133,6 +133,7 @@ export default function Forms() {
                     bgColor="bg-red-500"
                     textColor="text-white"
                     bghColor="bg-red-600"
+                    minWidth=''
                   />
                 </div>
               </div>

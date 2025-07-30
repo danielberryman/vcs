@@ -1,8 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { Identify, Forms, Attest, Verify, DownloadVC } from './pages/index';
-import { FaAddressCard, FaRegWindowMaximize, FaSignature, FaCheckDouble } from 'react-icons/fa';
+import { FaAddressCard, FaRegWindowMaximize, FaSignature, FaCheckDouble, FaQuestionCircle } from 'react-icons/fa';
 import Layout from './components/Layout';
 import DataInColorBanner from './components/DataInColorBanner';
+import HowItWorks from './pages/HowItWorks';
 
 function BottomNav() {
   const location = useLocation();
@@ -11,6 +12,7 @@ function BottomNav() {
     { to: '/forms', icon: <FaRegWindowMaximize />, label: 'Forms' },
     { to: '/attest', icon: <FaSignature />, label: 'Attest' },
     { to: '/verify', icon: <FaCheckDouble />, label: 'Verify' },
+    { to: '/hiw', icon: <FaQuestionCircle />, label: 'How It Works' },
   ];
 
   return (
@@ -59,6 +61,11 @@ export default function App() {
           <Route path="/download-vc" element={
             <Layout>
               <DownloadVC />
+            </Layout>
+          } />
+          <Route path="/hiw" element={
+            <Layout>
+              <HowItWorks />
             </Layout>
           } />
         </Routes>

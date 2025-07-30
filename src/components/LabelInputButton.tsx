@@ -8,6 +8,7 @@ const LabelInputButton = ({
   bghColor = "bg-gray-200",
   texthColor,
   rounded = true,
+  minWidth = "min-w-35",
 }: { 
   text: string;
   onChange: any;
@@ -18,6 +19,7 @@ const LabelInputButton = ({
   bghColor?: string;
   texthColor?: string;
   rounded?: boolean;
+  minWidth?: string;
 }) => {
   return (
     <label className={`
@@ -26,6 +28,8 @@ const LabelInputButton = ({
       ${bgColor} ${textColor} hover:${bghColor} hover:${texthColor}
       ${rounded && "rounded"}
       cursor-pointer
+      text-center
+      ${minWidth}
     `}>
       {text}
       <input

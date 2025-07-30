@@ -5,11 +5,11 @@ interface RecursiveObjectListProps {
 }
 
 const RecursiveObjectList: React.FC<RecursiveObjectListProps> = ({ data }) => {
-  const render = (key: string, value: any): React.ReactNode => {
+  const render = (i: number, key: string, value: any): React.ReactNode => {
     const valueIsObject = typeof value === 'object' && !Array.isArray(value) && value !== null;
 
     return (
-        <li key={key} className={`mb-1 ${!valueIsObject && !Array.isArray(value) && "pl-5 flex gap-2"}`}>
+        <li key={`${key}-${i}`} className={`mb-1 ${!valueIsObject && !Array.isArray(value) && "pl-5 flex gap-2"}`}>
             <strong>{key}:</strong>
             {valueIsObject ? (
                 <RecursiveObjectList data={value} />
@@ -23,7 +23,7 @@ const RecursiveObjectList: React.FC<RecursiveObjectListProps> = ({ data }) => {
                                         {String(v)}
                                     </span>
                                 </li>
-                            ))} 
+                            ))}
                         </ol>
                     ) : (
                         <span className="block overflow-hidden text-ellipsis whitespace-nowrap max-w-full">
@@ -38,8 +38,8 @@ const RecursiveObjectList: React.FC<RecursiveObjectListProps> = ({ data }) => {
 
   return (
     <ul>
-      {Object.entries(data).map(([key, value]) => {
-        return render(key, value);
+      {Object.entries(data).map(([key, value], i: number) => {
+        return render(i, key, value);
       })}
     </ul>
   );

@@ -5,10 +5,12 @@ const CustomButton = ({
   px = "px-4",
   py = "py-2",
   bgColor = "bg-gray-100",
-  textColor,
+  textColor = "",
   bghColor = "bg-gray-200",
-  texthColor,
+  texthColor = "",
   rounded = true,
+  minWidth = "min-w-35",
+  className = ""
 }: { 
   text: string;
   onClick: any;
@@ -20,14 +22,18 @@ const CustomButton = ({
   bghColor?: string;
   texthColor?: string;
   rounded?: boolean;
+  minWidth?: string;
+  className?: string;
 }) => {
   return (
     <button onClick={onClick} className={`
       ${px} ${py}
-      ${bgColor} ${textColor ? textColor : ""} hover:${bghColor} ${texthColor ? `hover:${texthColor}` : ""}
+      ${bgColor} ${textColor} hover:${bghColor} ${texthColor && `hover:${texthColor}`}
       ${rounded && "rounded"}
       cursor-pointer
       ${sm ? "text-sm" : ""}
+      ${minWidth}
+      ${className}
     `}>{text}</button>
   );
 };

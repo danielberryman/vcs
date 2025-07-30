@@ -185,6 +185,7 @@ function RequestTab() {
                                 text="X"
                                 onClick={clearImported}
                                 sm={true}
+                                minWidth=""
                             />
                         </div>
                         <Components.CustomButton
@@ -227,6 +228,7 @@ function RequestTab() {
                                     text="X"
                                     onClick={() => removeStored(idx)}
                                     sm={true}
+                                    minWidth=""
                                 />
                             </div>
                             <div className="flex gap-2">
@@ -459,6 +461,7 @@ function IssueTab({ preloadedClaim }: { preloadedClaim?: any }) {
                                             onClick={clearImported}
                                             sm={true}
                                             textColor="text-black"
+                                            minWidth=""
                                         />
                                     </div>
                                 </div>
@@ -500,6 +503,7 @@ function IssueTab({ preloadedClaim }: { preloadedClaim?: any }) {
                                             onClick={() => removeStored(idx)}
                                             sm={true}
                                             textColor="text-black"
+                                            minWidth=''
                                         />
                                     </div>
                                 </div>

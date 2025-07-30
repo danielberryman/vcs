@@ -8,6 +8,7 @@ import { type VerifiableCredential } from '@veramo/core';
 import { useGlobalModal } from '../hooks/useGlobalModal';
 import { FaCamera } from 'react-icons/fa';
 import RecursiveObjectList from '../components/RecursiveObjectList';
+import { useToast } from '../hooks/useToast';
 
 const BASE_URL = 'http://192.168.1.231:5173/';
 
@@ -25,6 +26,8 @@ export const isVCFileDefinition = (data: any): data is VCFileDefinition => {
 };
 
 export default function Verify() {
+    const { showToast } = useToast();
+
     const {
         imported,
         stored,
@@ -121,7 +124,10 @@ export default function Verify() {
                         {!imported ? (
                             <Components.LabelInputButton
                                 text="Load (.json)"
-                                onChange={handleImport}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    setEncodedVC("");
+                                    handleImport(e);
+                                }}
                                 bgColor="bg-yellow-300"
                                 bghColor="bg-yellow-400"
                                 inline-block
@@ -130,8 +136,15 @@ export default function Verify() {
                             <Components.CustomButton
                                 text="Save to Browser"
                                 onClick={() => {
-                                    setStatus(null);
-                                    saveImported();
+                                    if (status === "valid") {
+                                        setStatus(null);
+                                        saveImported();
+                                        showToast("Saved to browser successfully.")
+                                    } else if (!status) {
+                                        showToast("Not saved to browser. Please click verify.")
+                                    } else {
+                                        showToast("Not saved to browser. VC is invalid.")
+                                    }
                                 }}
                                 bgColor="bg-blue-600"
                                 textColor="text-white"
@@ -162,6 +175,8 @@ export default function Verify() {
                                                 bgColor="bg-green-600"
                                                 textColor="text-white"
                                                 bghColor="bg-green-700"
+                                                sm={true}
+                                                className="mb-4"
                                             />
                                         )}
                                         <RecursiveObjectList data={imported.data} />
@@ -176,6 +191,7 @@ export default function Verify() {
                                             }}
                                             sm={true}
                                             textColor="text-black"
+                                            minWidth=""
                                         />
                                     </div>
                                 </div>
@@ -193,7 +209,7 @@ export default function Verify() {
                     <p className="text-gray-600">No loaded claim.</p>
                 )}
                 <div className="flex gap-2 justify-between items-center">
-                    <h2 className="text-lg font-semibold">Saved VCs</h2>
+                    <h2 className="text-lg font-semibold">Saved Verified VCs ✅</h2>
                     <div className="flex gap-2">
                         {listStored.length > 0 && (
                             <Components.CustomButton
@@ -209,14 +225,6 @@ export default function Verify() {
                             <div key={idx} className="p-3 bg-blue-600 rounded shadow-sm">
                                 <div className="flex justify-between items-start text-white mb-4 w-full max-w-full">
                                     <div className="flex-1 min-w-0 overflow-hidden">
-                                        <div className="flex items-center gap-2 mb-4">
-                                            <h2 className="text-xl font-bold">Verification Result</h2>
-                                            <div className="bg-gray-100 rounded p-2">
-                                                {status === 'pending' && <p>Verifying VC...</p>}
-                                                {status === 'valid' && <p className="text-green-600 font-semibold">✅ VC is valid</p>}
-                                                {status === 'invalid' && <p className="text-red-600 font-semibold">❌ VC is invalid</p>}
-                                            </div>
-                                        </div>
                                         <RecursiveObjectList data={form.data} />
                                     </div>
                                     <div className="shrink-0">
@@ -225,6 +233,7 @@ export default function Verify() {
                                             onClick={() => removeStored(idx)}
                                             sm={true}
                                             textColor="text-black"
+                                            minWidth=""
                                         />
                                     </div>
                                 </div>
