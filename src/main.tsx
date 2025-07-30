@@ -4,12 +4,15 @@ import App from './App.tsx'
 import './index.css'
 import { ModalProvider } from './hooks/useGlobalModal.tsx'
 import { ToastProvider } from './hooks/useToast.tsx'
+import { BrowserRouter } from 'react-router-dom'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ModalProvider>
       <ToastProvider>
-        <App />
+        <BrowserRouter basename="/vcs">
+          <App />
+        </BrowserRouter>
       </ToastProvider>
     </ModalProvider>
   </StrictMode>,
