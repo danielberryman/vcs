@@ -17,7 +17,17 @@ type VCFileDefinition = {
     data: VerifiableCredential;
 };
 
-export const isVCFileDefinition = (data: any): data is VCFileDefinition => {
+const isVerifiableCredential = (data: any): data is VerifiableCredential => {
+    return (
+        typeof data === 'object' &&
+        typeof data.credentialSubject === 'object' &&
+        typeof data.issuer === 'object' &&
+        typeof data.type === 'object' &&
+        typeof data.proof === 'object'
+    );
+};
+
+const isVCFileDefinition = (data: any): data is VCFileDefinition => {
     return (
         typeof data === 'object' &&
         typeof data.verified === 'boolean' &&
@@ -37,9 +47,10 @@ export default function Verify() {
         clearImported,
         clearStorage,
         removeStored,
-    } = useResourceManager<VCFileDefinition>({
+    } = useResourceManager<VerifiableCredential, VCFileDefinition>({
         localStorageKey: 'peerplay-vcs',
-        validate: isVCFileDefinition,
+        validateI: isVerifiableCredential,
+        validateS: isVCFileDefinition,
         mode: 'list',
     });
     const listStored = Array.isArray(stored) && stored.length > 0 ? stored : [];
@@ -58,10 +69,7 @@ export default function Verify() {
 
             try {
                 const result = await agent.verifyCredential({ credential: decodedVC });
-                handleImportFromGenerate({
-                    verified: result.verified,
-                    data: decodedVC as VerifiableCredential,
-                });
+                handleImportFromGenerate(decodedVC as VerifiableCredential);
                 setStatus(result.verified ? 'valid' : 'invalid');
             } catch (err) {
                 console.error('Verification error:', err);
@@ -74,8 +82,8 @@ export default function Verify() {
 
     const { showModal, hideModal } = useGlobalModal();
 
-    const generateQRCode = (claim: VCFileDefinition) => {
-        const encoded = encodeURIComponent(JSON.stringify(claim.data));
+    const generateQRCode = (claim: VerifiableCredential) => {
+        const encoded = encodeURIComponent(JSON.stringify(claim));
         console.log(`${BASE_URL}verify?vc=${encoded}`);
 
         showModal(
@@ -138,7 +146,10 @@ export default function Verify() {
                                 onClick={() => {
                                     if (status === "valid") {
                                         setStatus(null);
-                                        saveImported();
+                                        saveImported({
+                                            verified: true,
+                                            data: imported,
+                                        });
                                         showToast("Saved to browser successfully.")
                                     } else if (!status) {
                                         showToast("Not saved to browser. Please click verify.")
@@ -171,7 +182,7 @@ export default function Verify() {
                                         ) : (
                                             <Components.CustomButton
                                                 text="Verify"
-                                                onClick={() => setEncodedVC(JSON.stringify(imported.data))}
+                                                onClick={() => setEncodedVC(JSON.stringify(imported))}
                                                 bgColor="bg-green-600"
                                                 textColor="text-white"
                                                 bghColor="bg-green-700"
@@ -179,7 +190,7 @@ export default function Verify() {
                                                 className="mb-4"
                                             />
                                         )}
-                                        <RecursiveObjectList data={imported.data} />
+                                        <RecursiveObjectList data={imported} />
                                     </div>
                                     <div className="shrink-0">
                                         <Components.CustomButton
@@ -240,7 +251,7 @@ export default function Verify() {
                                 <div className="flex gap-2">
                                     <Components.CustomButton
                                         text="QR Code"
-                                        onClick={() => generateQRCode(form)}
+                                        onClick={() => generateQRCode(form.data)}
                                         sm={true}
                                     />
                                     <Components.CustomButton

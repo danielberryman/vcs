@@ -1,20 +1,23 @@
 import { useState, useEffect } from 'react';
 
-type ResourceValidator<T> = (data: any) => data is T;
+type IResourceValidator<TI> = (data: any) => data is TI;
+type SResourceValidator<TS> = (data: any) => data is TS;
 
-interface UseResourceManagerOptions<T> {
+interface UseResourceManagerOptions<TI, TS> {
     localStorageKey: string;
-    validate: ResourceValidator<T>;
+    validateI: IResourceValidator<TI>;
+    validateS: SResourceValidator<TS>;
     mode?: 'single' | 'list'; // default: 'list'
 }
 
-export function useResourceManager<T>({
+export function useResourceManager<TI, TS>({
     localStorageKey,
-    validate,
+    validateI,
+    validateS,
     mode = 'list',
-}: UseResourceManagerOptions<T>) {
-    const [imported, setImported] = useState<T | null>(null);
-    const [stored, setStored] = useState<T[] | T | null>(null);
+}: UseResourceManagerOptions<TI, TS>) {
+    const [imported, setImported] = useState<TI | null>(null);
+    const [stored, setStored] = useState<TS[] | TS | null>(null);
 
     // Load from localStorage on mount
     useEffect(() => {
@@ -24,16 +27,16 @@ export function useResourceManager<T>({
         try {
             const parsed = JSON.parse(raw);
             if (mode === 'single') {
-                if (validate(parsed)) setStored(parsed);
+                if (validateS(parsed)) setStored(parsed);
             } else {
                 const list = Array.isArray(parsed) ? parsed : [];
-                const validList = list.filter(validate);
+                const validList = list.filter(validateS);
                 setStored(validList);
             }
         } catch {
             console.warn(`Invalid data in localStorage key: ${localStorageKey}`);
         }
-    }, [localStorageKey, validate, mode]);
+    }, [localStorageKey, validateS, mode]);
 
     const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -43,7 +46,7 @@ export function useResourceManager<T>({
         reader.onload = () => {
             try {
                 const parsed = JSON.parse(reader.result as string);
-                if (validate(parsed)) {
+                if (validateI(parsed)) {
                     setImported(parsed);
                 } else {
                     alert('Invalid file format');
@@ -55,19 +58,19 @@ export function useResourceManager<T>({
         reader.readAsText(file);
     };
 
-    const handleImportFromGenerate = (data: T) => {
+    const handleImportFromGenerate = (data: TI) => {
         setImported(data);
     }
 
-    const saveImported = () => {
-        if (!imported) return;
+    const saveImported = (data: TS) => {
+        if (!data) return;
 
         if (mode === 'single') {
-            localStorage.setItem(localStorageKey, JSON.stringify(imported));
-            setStored(imported);
+            localStorage.setItem(localStorageKey, JSON.stringify(data));
+            setStored(data);
         } else {
             const current = Array.isArray(stored) ? stored : [];
-            const updated = [...current, imported];
+            const updated = [...current, data];
             localStorage.setItem(localStorageKey, JSON.stringify(updated));
             setStored(updated);
         }

@@ -74,9 +74,10 @@ function RequestTab() {
         clearImported,
         clearStorage,
         removeStored,
-    } = useResourceManager<VCClaimDefinition>({
+    } = useResourceManager<VCClaimDefinition, VCClaimDefinition>({
         localStorageKey: 'peerplay-claims',
-        validate: isVCClaimDefinition,
+        validateI: isVCClaimDefinition,
+        validateS: isVCClaimDefinition,
         mode: 'list',
     });
     const listStored = Array.isArray(stored) && stored.length > 0 ? stored : [];
@@ -157,7 +158,7 @@ function RequestTab() {
                     ) : (
                         <Components.CustomButton
                             text="Save to Browser"
-                            onClick={saveImported}
+                            onClick={() => saveImported(imported)}
                             bgColor="bg-blue-600"
                             textColor="text-white"
                             bghColor="bg-blue-700"
@@ -311,9 +312,10 @@ function IssueTab({ preloadedClaim }: { preloadedClaim?: any }) {
         clearImported,
         clearStorage,
         removeStored,
-    } = useResourceManager<VerifiableCredential>({
+    } = useResourceManager<VerifiableCredential, VerifiableCredential>({
         localStorageKey: 'peerplay-claims',
-        validate: isVerifiableCredential,
+        validateI: isVerifiableCredential,
+        validateS: isVerifiableCredential,
         mode: 'list',
     });
     const listStored = Array.isArray(stored) && stored.length > 0 ? stored : [];
@@ -435,7 +437,7 @@ function IssueTab({ preloadedClaim }: { preloadedClaim?: any }) {
                         ) : (
                             <Components.CustomButton
                                 text="Save to Browser"
-                                onClick={saveImported}
+                                onClick={() => saveImported(imported)}
                                 bgColor="bg-blue-600"
                                 textColor="text-white"
                                 bghColor="bg-blue-700"

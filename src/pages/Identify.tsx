@@ -15,9 +15,10 @@ export default function Identify() {
         saveImported,
         clearImported,
         clearStorage,
-    } = useResourceManager<StoredIdentity>({
+    } = useResourceManager<StoredIdentity, StoredIdentity>({
         localStorageKey: 'peerplay-identity',
-        validate: isStoredIdentity,
+        validateI: isStoredIdentity,
+        validateS: isStoredIdentity,
         mode: 'single',
     });
 
@@ -67,10 +68,10 @@ export default function Identify() {
                         singleStored?.did || imported?.did}
                     </p>
                     <div className="flex gap-2">
-                        {!singleStored && (
+                        {!singleStored && imported && (
                             <Components.CustomButton
                                 text="Save to Browser"
-                                onClick={saveImported}
+                                onClick={() => saveImported(imported)}
                                 bgColor="bg-blue-600"
                                 textColor="text-white"
                                 bghColor="bg-blue-700"

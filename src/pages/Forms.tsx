@@ -31,9 +31,10 @@ export default function Forms() {
     clearImported,
     clearStorage,
     removeStored,
-  } = useResourceManager<VCFormDefinition>({
+  } = useResourceManager<VCFormDefinition, VCFormDefinition>({
     localStorageKey: 'peerplay-forms',
-    validate: isVCFormDefinition,
+    validateI: isVCFormDefinition,
+    validateS: isVCFormDefinition,
     mode: 'list',
   });
 
@@ -67,7 +68,7 @@ export default function Forms() {
             ) : (
               <Components.CustomButton
                 text="Save to Browser"
-                onClick={saveImported}
+                onClick={() => saveImported(imported)}
                 bgColor="bg-blue-600"
                 textColor="text-white"
                 bghColor="bg-blue-700"
