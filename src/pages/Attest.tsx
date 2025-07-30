@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { agent } from '../veramoAgent';
-import { useScanQRCode } from '../hooks/useScanQRCode'; // You'd implement this separately
+// import { useScanQRCode } from '../hooks/useScanQRCode'; // You'd implement this separately
 import Components from '../components/index';
 import { useResourceManager } from '../hooks/useResourceManager';
 import { useGlobalModal } from '../hooks/useGlobalModal';
@@ -9,7 +9,7 @@ import { type VerifiableCredential } from '@veramo/core';
 import RecursiveObjectList from '../components/RecursiveObjectList';
 import { FaCamera } from 'react-icons/fa';
 
-const BASE_URL = `${window.location.origin}${import.meta.env.BASE_URL}/`;
+const BASE_URL = `${window.location.origin}${import.meta.env.BASE_URL}`;
 const FORM_STORAGE_KEY = 'peerplay-forms';
 
 const tabs = [
@@ -319,8 +319,6 @@ function IssueTab({ preloadedClaim }: { preloadedClaim?: any }) {
     const listStored = Array.isArray(stored) && stored.length > 0 ? stored : [];
 
     const [scannedClaim, setScannedClaim] = useState<any>(null);
-    const [signedVC, setSignedVC] = useState<any>(null);
-    const [encodedVC, setEncodedVC] = useState<any>(null);
     // const { QRScanner } = useScanQRCode(setScannedClaim); // Custom hook/comp that gives you scanner
 
     const { showModal, hideModal } = useGlobalModal();
@@ -363,8 +361,6 @@ function IssueTab({ preloadedClaim }: { preloadedClaim?: any }) {
 
         handleImportFromGenerate(vc);
         setScannedClaim(null);
-        const encoded = encodeURIComponent(btoa(JSON.stringify(vc)));
-        setEncodedVC(`${window.location.origin}/download-vc?vc=${encoded}`);
     };
 
     const generateQRCode = (claim: VerifiableCredential) => {

@@ -10,7 +10,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ModalProvider>
       <ToastProvider>
-        <BrowserRouter basename="/vcs">
+        <BrowserRouter>
           <App />
         </BrowserRouter>
       </ToastProvider>

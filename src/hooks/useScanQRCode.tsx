@@ -25,8 +25,9 @@ export function useScanQRCode(onScan: (data: any) => void) {
             alert('Invalid QR content');
           }
         },
-        (err) => {
+        (err: any) => {
           // Silent on scan failures
+          console.log(err);
         }
       );
 
