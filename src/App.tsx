@@ -32,6 +32,14 @@ function BottomNav() {
   );
 }
 
+function NormalizeIndexHtml() {
+  const location = useLocation();
+  if (location.pathname === '/index.html') {
+    return <Navigate to="/" replace />;
+  }
+  return null;
+}
+
 function StripTrailingSlash() {
   const location = useLocation();
   if (location.pathname !== '/' && location.pathname.endsWith('/')) {
@@ -44,6 +52,7 @@ export default function App() {
   return (
     <div className="pb-16"> {/* padding for bottom nav */}
       <DataInColorBanner />
+      <NormalizeIndexHtml />
       <StripTrailingSlash />
       <Routes>
         <Route path="/" element={
