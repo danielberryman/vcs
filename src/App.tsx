@@ -34,43 +34,41 @@ function BottomNav() {
 
 export default function App() {
   return (
-    <Router>
-      <div className="pb-16"> {/* padding for bottom nav */}
-        <DataInColorBanner />
-        <Routes>
-          <Route path="/" element={
-            <Layout>
-              <Identify />
-            </Layout>
-          } />
-          <Route path="/forms" element={
-            <Layout>
-              <Forms />
-            </Layout>
-          } />
-          <Route path="/attest" element={
-            <Layout>
-              <Attest />
-            </Layout>  
-          } />
-          <Route path="/verify" element={
-            <Layout>
-              <Verify />
-            </Layout>
-          } />
-          <Route path="/download-vc" element={
-            <Layout>
-              <DownloadVC />
-            </Layout>
-          } />
-          <Route path="/hiw" element={
-            <Layout>
-              <HowItWorks />
-            </Layout>
-          } />
-        </Routes>
-        <BottomNav />
-      </div>
-    </Router>
+    <div className="pb-16"> {/* padding for bottom nav */}
+      <DataInColorBanner />
+      <Routes>
+        <Route path="/" element={
+          <Layout>
+            <Identify />
+          </Layout>
+        } />
+        <Route path="/forms" element={
+          <Layout>
+            <Forms />
+          </Layout>
+        } />
+        <Route path="/attest" element={
+          <Layout>
+            <Attest />
+          </Layout>
+        } />
+        <Route path="/verify" element={
+          <Layout>
+            <Verify />
+          </Layout>
+        } />
+        <Route path="/download-vc" element={
+          <Layout>
+            <DownloadVC />
+          </Layout>
+        } />
+        <Route path="/hiw" element={
+          <Layout>
+            <HowItWorks />
+          </Layout>
+        } />
+      </Routes>
+      <BottomNav />
+    </div>
   );
 }
