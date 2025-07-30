@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import { Identify, Forms, Attest, Verify, DownloadVC } from './pages/index';
 import { FaAddressCard, FaRegWindowMaximize, FaSignature, FaCheckDouble, FaQuestionCircle } from 'react-icons/fa';
 import Layout from './components/Layout';
@@ -67,6 +67,7 @@ export default function App() {
             <HowItWorks />
           </Layout>
         } />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <BottomNav />
     </div>
