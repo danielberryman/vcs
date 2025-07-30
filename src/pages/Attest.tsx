@@ -124,7 +124,8 @@ function RequestTab() {
 
     const generateQRCode = (claim: VCClaimDefinition) => {
         const encoded = encodeURIComponent(JSON.stringify(claim));
-
+        console.log(`${BASE_URL}attest?claim=${encoded}`);
+        
         showModal(
             <div className='flex flex-col gap-3 items-center'>
                 <h3 className="font-semibold">Scan this with a peer to issue:</h3>

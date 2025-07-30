@@ -81,7 +81,7 @@ export default function Verify() {
         showModal(
             <div className='flex flex-col gap-3 items-center'>
                 <h3 className="font-semibold">Scan this with a peer to issue:</h3>
-                <QRCodeSVG value={`${BASE_URL}attest?claim=${encoded}`} size={256} />
+                <QRCodeSVG value={`${BASE_URL}verify?claim=${encoded}`} size={256} />
                 <Components.CustomButton
                     text="Close"
                     onClick={hideModal}
