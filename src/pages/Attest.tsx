@@ -9,7 +9,7 @@ import { type VerifiableCredential } from '@veramo/core';
 import RecursiveObjectList from '../components/RecursiveObjectList';
 import { FaCamera } from 'react-icons/fa';
 
-const BASE_URL = `${window.location.origin}${import.meta.env.BASE_URL}`;
+const BASE_URL = `${window.location.origin}${import.meta.env.BASE_URL}/`;
 const FORM_STORAGE_KEY = 'peerplay-forms';
 
 const tabs = [

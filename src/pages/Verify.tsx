@@ -10,7 +10,7 @@ import { FaCamera } from 'react-icons/fa';
 import RecursiveObjectList from '../components/RecursiveObjectList';
 import { useToast } from '../hooks/useToast';
 
-const BASE_URL = `${window.location.origin}${import.meta.env.BASE_URL}`;
+const BASE_URL = `${window.location.origin}${import.meta.env.BASE_URL}/`;
 
 type VCFileDefinition = {
     verified: boolean;
