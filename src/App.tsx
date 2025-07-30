@@ -32,10 +32,19 @@ function BottomNav() {
   );
 }
 
+function StripTrailingSlash() {
+  const location = useLocation();
+  if (location.pathname !== '/' && location.pathname.endsWith('/')) {
+    return <Navigate to={location.pathname.slice(0, -1)} replace />;
+  }
+  return null;
+}
+
 export default function App() {
   return (
     <div className="pb-16"> {/* padding for bottom nav */}
       <DataInColorBanner />
+      <StripTrailingSlash />
       <Routes>
         <Route path="/" element={
           <Layout>
