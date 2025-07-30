@@ -9,8 +9,8 @@ import { type VerifiableCredential } from '@veramo/core';
 import RecursiveObjectList from '../components/RecursiveObjectList';
 import { FaCamera } from 'react-icons/fa';
 
+const BASE_URL = `${window.location.origin}${import.meta.env.BASE_URL}`;
 const FORM_STORAGE_KEY = 'peerplay-forms';
-const BASE_URL = 'http://192.168.1.231:5173/'; // Replace with your actual dev IP and port
 
 const tabs = [
     { key: 'request', label: 'Requested Claims' },
@@ -124,7 +124,6 @@ function RequestTab() {
 
     const generateQRCode = (claim: VCClaimDefinition) => {
         const encoded = encodeURIComponent(JSON.stringify(claim));
-        console.log(`${BASE_URL}attest?claim=${encoded}`);
 
         showModal(
             <div className='flex flex-col gap-3 items-center'>

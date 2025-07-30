@@ -110,12 +110,13 @@ export default function SimpleFormCreator() {
       )}
 
       {title && fields.length > 0 && (
-        <button
+        <Components.CustomButton
+          text="Download Form (.json)"
           onClick={handleDownload}
-          className="bg-blue-600 px-6 py-2 rounded hover:bg-blue-700"
-        >
-          Download Form JSON
-        </button>
+          bgColor="bg-blue-600"
+          textColor="text-white"
+          bghColor="bg-blue-700"
+        />
       )}
     </div>
   );
