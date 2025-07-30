@@ -6,9 +6,11 @@ import Components from '../components/index';
 import { useResourceManager } from '../hooks/useResourceManager';
 import { useGlobalModal } from '../hooks/useGlobalModal';
 import { type VerifiableCredential } from '@veramo/core';
+import RecursiveObjectList from '../components/RecursiveObjectList';
+import { FaCamera } from 'react-icons/fa';
 
 const FORM_STORAGE_KEY = 'peerplay-forms';
-const BASE_URL = 'http://192.168.1.231:5173/attest'; // Replace with your actual dev IP and port
+const BASE_URL = 'http://192.168.1.231:5173/'; // Replace with your actual dev IP and port
 
 const tabs = [
     { key: 'request', label: 'Requested Claims' },
@@ -122,12 +124,12 @@ function RequestTab() {
 
     const generateQRCode = (claim: VCClaimDefinition) => {
         const encoded = encodeURIComponent(JSON.stringify(claim));
-        console.log(`${BASE_URL}?claim=${encoded}`);
+        console.log(`${BASE_URL}attest?claim=${encoded}`);
 
         showModal(
             <div className='flex flex-col gap-3 items-center'>
                 <h3 className="font-semibold">Scan this with a peer to issue:</h3>
-                <QRCodeSVG value={`${BASE_URL}?claim=${encoded}`} size={256} />
+                <QRCodeSVG value={`${BASE_URL}attest?claim=${encoded}`} size={256} />
                 <Components.CustomButton
                     text="Close"
                     onClick={hideModal}
@@ -358,19 +360,19 @@ function IssueTab({ preloadedClaim }: { preloadedClaim?: any }) {
         });
 
         handleImportFromGenerate(vc);
-        scannedClaim(null);
+        setScannedClaim(null);
         const encoded = encodeURIComponent(btoa(JSON.stringify(vc)));
         setEncodedVC(`${window.location.origin}/download-vc?vc=${encoded}`);
     };
 
     const generateQRCode = (claim: VerifiableCredential) => {
         const encoded = encodeURIComponent(JSON.stringify(claim));
-        console.log(`${BASE_URL}?claim=${encoded}`);
+        console.log(`${BASE_URL}verify?vc=${encoded}`);
 
         showModal(
             <div className='flex flex-col gap-3 items-center'>
                 <h3 className="font-semibold">Scan this with a peer to issue:</h3>
-                <QRCodeSVG value={`${BASE_URL}?claim=${encoded}`} size={256} />
+                <QRCodeSVG value={`${BASE_URL}verify?vc=${encoded}`} size={256} />
                 <Components.CustomButton
                     text="Close"
                     onClick={hideModal}
@@ -382,9 +384,26 @@ function IssueTab({ preloadedClaim }: { preloadedClaim?: any }) {
         )
     }
 
+    const handleDownload = (form: VerifiableCredential) => {
+        const blob = new Blob([JSON.stringify(form, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `verifiable_cred.json`;
+        a.click();
+    };
+
     return (
-        <div className="flex flex-col gap-3">
-            {scannedClaim && (
+        <div>
+            {!scannedClaim ? (
+                <div className="flex items-center gap-3">
+                    <h2 className="text-lg font-semibold">
+                        <i>Scan a claim QR with your camera to sign.</i>
+                    </h2>
+                    <FaCamera />
+                    {/* <QRScanner /> */}
+                </div>
+            ) : (
                 <>
                     <div>
                         <h3 className="font-semibold">Claim to Sign:</h3>
@@ -401,104 +420,108 @@ function IssueTab({ preloadedClaim }: { preloadedClaim?: any }) {
                     />
                 </>
             )}
-            <div className="flex gap-2 justify-between items-center">
-                <h2 className="text-lg font-semibold">Loaded Issued Claims</h2>
-                <div className="flex gap-2">
-                    {!imported ? (
-                        <Components.LabelInputButton
-                            text="Load (.json)"
-                            onChange={handleImport}
-                            bgColor="bg-yellow-300"
-                            bghColor="bg-yellow-400"
-                            inline-block
-                        />
-                    ) : (
-                        <Components.CustomButton
-                            text="Save to Browser"
-                            onClick={saveImported}
-                            bgColor="bg-blue-600"
-                            textColor="text-white"
-                            bghColor="bg-blue-700"
-                        />
-                    )}
-                </div>
-            </div>
-            {imported ? (
-                <div className="space-y-4">
-                    <div className="p-3 bg-yellow-300 rounded">
-                        <div className="flex justify-between items-start">
-                            <pre className="bg-gray-100 p-2 rounded text-xs mb-2">
-                                {JSON.stringify(imported, null, 2)}
-                            </pre>
-                            <Components.CustomButton
-                                text="X"
-                                onClick={clearImported}
-                                sm={true}
+            <Components.Separator />
+            <div className="flex flex-col gap-3">
+
+                <div className="flex gap-2 justify-between items-center">
+                    <h2 className="text-lg font-semibold">Loaded Issued Claims</h2>
+                    <div className="flex gap-2">
+                        {!imported ? (
+                            <Components.LabelInputButton
+                                text="Load (.json)"
+                                onChange={handleImport}
+                                bgColor="bg-yellow-300"
+                                bghColor="bg-yellow-400"
+                                inline-block
                             />
-                        </div>
-                        <div className="flex gap-2">
+                        ) : (
                             <Components.CustomButton
-                                text="QR Code"
-                                onClick={() => generateQRCode(imported)}
-                                sm={true}
+                                text="Save to Browser"
+                                onClick={saveImported}
+                                bgColor="bg-blue-600"
+                                textColor="text-white"
+                                bghColor="bg-blue-700"
                             />
-                        </div>
+                        )}
                     </div>
                 </div>
-            ) : (
-                <p className="text-gray-600">No loaded claim.</p>
-            )}
-            <div className="flex gap-2 justify-between items-center">
-                <h2 className="text-lg font-semibold">Saved Issued Claims</h2>
-                <div className="flex gap-2">
-                    {listStored.length > 0 && (
-                        <Components.CustomButton
-                            text="Clear All"
-                            onClick={clearStorage}
-                        />
-                    )}
-                </div>
-            </div>
-            {listStored.length > 0 ? (
-                <div className="space-y-4">
-                    {listStored.map((form, idx) => (
-                        <div key={idx} className="p-3 bg-blue-600 rounded shadow-sm">
+                {imported ? (
+                    <div className="space-y-4">
+                        <div className="p-3 bg-yellow-300 rounded">
                             <div className="flex justify-between items-start">
-                                <div className="w-3/4 break-words">
-                                    <pre className="bg-gray-100 p-2 rounded text-xs mb-2">
-                                        {JSON.stringify(form, null, 2)}
-                                    </pre>
+                                <div className="flex justify-between items-start mb-4 w-full max-w-full">
+                                    <div className="flex-1 min-w-0 overflow-hidden">
+                                        <RecursiveObjectList data={imported} />
+                                    </div>
+                                    <div className="shrink-0">
+                                        <Components.CustomButton
+                                            text="X"
+                                            onClick={clearImported}
+                                            sm={true}
+                                            textColor="text-black"
+                                        />
+                                    </div>
                                 </div>
-                                <Components.CustomButton
-                                    text="X"
-                                    onClick={() => removeStored(idx)}
-                                    sm={true}
-                                />
                             </div>
                             <div className="flex gap-2">
                                 <Components.CustomButton
                                     text="QR Code"
-                                    onClick={() => generateQRCode(form)}
-                                    sm={true}
-                                />
-                                <Components.CustomButton
-                                    text="Download File (.json)"
-                                    onClick={() => { }}
+                                    onClick={() => generateQRCode(imported)}
                                     sm={true}
                                 />
                             </div>
                         </div>
-                    ))}
+                    </div>
+                ) : (
+                    <p className="text-gray-600">No loaded claim.</p>
+                )}
+                <div className="flex gap-2 justify-between items-center">
+                    <h2 className="text-lg font-semibold">Saved Issued Claims</h2>
+                    <div className="flex gap-2">
+                        {listStored.length > 0 && (
+                            <Components.CustomButton
+                                text="Clear All"
+                                onClick={clearStorage}
+                            />
+                        )}
+                    </div>
                 </div>
-            ) : (
-                <p className="text-gray-600">No saved forms.</p>
-            )}
-            {!scannedClaim && (
-                <>
-                    <h2 className="text-lg font-semibold">Scan a claim QR to sign</h2>
-                    {/* <QRScanner /> */}
-                </>
-            )}
+                {listStored.length > 0 ? (
+                    <div className="space-y-4">
+                        {listStored.map((form, idx) => (
+                            <div key={idx} className="p-3 bg-blue-600 rounded shadow-sm">
+                                <div className="flex justify-between items-start text-white mb-4 w-full max-w-full">
+                                    <div className="flex-1 min-w-0 overflow-hidden">
+                                        <RecursiveObjectList data={form} />
+                                    </div>
+                                    <div className="shrink-0">
+                                        <Components.CustomButton
+                                            text="X"
+                                            onClick={() => removeStored(idx)}
+                                            sm={true}
+                                            textColor="text-black"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex gap-2">
+                                    <Components.CustomButton
+                                        text="QR Code"
+                                        onClick={() => generateQRCode(form)}
+                                        sm={true}
+                                    />
+                                    <Components.CustomButton
+                                        text="Download File (.json)"
+                                        onClick={() => handleDownload(form)}
+                                        sm={true}
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p className="text-gray-600">No saved forms.</p>
+                )}
+            </div>
         </div>
     );
 }
