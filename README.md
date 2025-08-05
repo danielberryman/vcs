@@ -1,69 +1,105 @@
-# React + TypeScript + Vite
+# UIdentity – A Fully Sovereign Identity System (No Backend Required)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> How I used Veramo, React, and QR codes to create a decentralized, educational identity system anyone can run for free.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🧩 The Problem
 
-## Expanding the ESLint configuration
+Self-Sovereign Identity (SSI) and Verifiable Credentials (VCs) are supposed to let people own their identity and data. But most implementations still depend on hosted infrastructure — centralized DID resolvers, cloud storage, backend servers, or proprietary wallets.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+I wanted to explore a simple question:
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+**What would it look like to build a fully sovereign identity system that runs entirely in the browser, with no backend at all?**
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+This wasn’t a client request. I was the client. The goal was to create an open-source, local-first identity stack that:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- Generates DIDs and key pairs
+- Signs and verifies Verifiable Credentials
+- Shares them peer-to-peer via QR code
+- Works offline and has zero HTTP dependencies
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## ⚙️ The Constraints & Complexity
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 🧠 Standards Complexity
+Even with tooling like [Veramo](https://veramo.io), the DID and VC specs are flexible and non-trivial. I had to deeply understand how to:
+- Generate and manage key pairs in the browser
+- Issue standards-compliant VCs
+- Manually verify credentials without external services
+
+### 🌐 Sovereignty Constraint
+To maintain full user control:
+- **No server**
+- **No login**
+- **No database**
+- **No centralized infrastructure**
+
+Everything needed to be client-side and optionally exportable.
+
+### 📱 Mobile Accessibility
+To test across devices, I briefly ran a local Node server to scan QR codes between my laptop and phone — no production backend involved.
+
+---
+
+## 🛠️ The Solution
+
+Built with:
+
+- [React](https://react.dev/) + [Vite](https://vitejs.dev/)
+- [Tailwind CSS](https://tailwindcss.com/) for clean, mobile-first design
+- [Veramo](https://veramo.io) for decentralized identity tooling
+- [qrcode.react](https://github.com/zpao/qrcode.react) for QR-based credential exchange
+
+### 📲 App Structure: 5 Core Tabs
+
+| Tab       | Purpose |
+|-----------|---------|
+| **Identity** | Generate a DID. Download or upload a local keypair file. Color-coded UI shows what’s stored in browser vs. shared. |
+| **Forms**    | Create reusable form templates. Fill them out and sign as a VC. A QR code is generated. |
+| **Attest**   | Scan a VC. Review, sign, and generate a new VC + QR code to continue the trust chain. |
+| **Verify**   | Scan any VC QR. Verifies and displays credentials. Optionally store verified VCs locally. |
+| **How It Works** | Explains DIDs, signing, QR flows, and the color-coded trust model. Manual = clarity. |
+
+---
+
+## 🧠 UX Philosophy
+
+The goal wasn’t just to make identity tech work — it was to make it understandable:
+
+- **Color-coded interface** teaches users what’s stored, shared, or ephemeral
+- **Manual flows** encourage intentionality and reflection
+- **Education-first UX** helps users internalize core concepts like trust, signing, and ownership
+
+No wallets. No background sync. No magic. Just you and your browser.
+
+---
+
+## 📈 Results
+
+- ✅ **Fully working identity system** — DID generation, VC signing, QR-based exchange, and verification
+- ✅ **Zero backend required**
+- ✅ **Built-in education layer**
+- 🔁 **Forkable foundation** for any community or niche use case
+- 🧪 **Next step**: Live workshop or tutorial to test usability and onboarding
+
+---
+
+## 💡 Key Takeaways
+
+- Backend-less ≠ easy. It means rethinking architecture from the ground up.
+- Education is infrastructure. The more transparent the flow, the stronger the trust.
+- Fully local identity tools are possible — and surprisingly empowering.
+
+---
+
+## 🚀 Try It Out
+
+> **[🌐 Live Demo](https://candid-gecko-010763.netlify.app)**  
+> Works on mobile — no install or wallet required.
+
+> **[💻 GitHub Repo](https://github.com/danielberryman/vcs)**  
+> Fork it, remix it, or build on top.
+
+---
