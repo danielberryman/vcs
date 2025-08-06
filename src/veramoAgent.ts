@@ -13,7 +13,6 @@ import { DIDResolverPlugin } from '@veramo/did-resolver';
 import { Resolver } from 'did-resolver';
 import { getDidKeyResolver } from '@veramo/did-provider-key'; // This gives you the did:key resolver
 
-
 const privateKeyStore = new MemoryPrivateKeyStore();
 const kms = new KeyManagementSystem(privateKeyStore);
 
